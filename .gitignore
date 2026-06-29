@@ -1,0 +1,14 @@
+# Terraform
+# The provider download (.terraform/) is hundreds of MB and is re-fetched by `terraform init`.
+**/.terraform/*
+# State can contain secrets and is environment-specific — never commit it.
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+
+# OS / IDE
+.DS_Store
+.idea
+.vscode
