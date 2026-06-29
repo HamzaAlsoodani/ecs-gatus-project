@@ -11,3 +11,10 @@ output "public_subnet_ids" {
   ]
 }
 
+output "private_subnet_ids" {
+  description = "The IDs of the private subnets created by this module"
+  value = [
+    aws_subnet.private_1.id,
+    aws_subnet.private_2.id,
+  ]
+}
