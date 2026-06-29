@@ -1,0 +1,32 @@
+# IDE
+*.iml
+.idea
+.vscode
+
+# OS
+.DS_Store
+
+# JS
+node_modules
+
+# Go
+/vendor
+
+# Misc
+*.db
+*.db-shm
+*.db-wal
+gatus
+config/config.yml
+# NOTE: config.yaml is intentionally tracked — it gets baked into the image at build time.
+
+# Terraform
+# The provider download (.terraform/) is ~650MB and is re-fetched by `terraform init`.
+**/.terraform/*
+# State can contain secrets and is environment-specific — never commit it.
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+# Keep .terraform.lock.hcl committed — it pins provider versions for reproducible builds.
