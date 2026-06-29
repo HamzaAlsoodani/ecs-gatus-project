@@ -92,7 +92,7 @@ resource "aws_route_table_association" "public_2" {
 }
 
 resource "aws_eip" "my_eip" {
-  domain   = "vpc"
+  domain = "vpc"
 
   tags = {
     Name = "my-elastic-ip"
