@@ -6,10 +6,7 @@ variable "vpc_id" {
   type = string
 }
 
-variable "public_subnet_ids" {
-  description = "The subnets where the Gatus containers will actually run"
-  type        = list(string)
-}
+
 variable "private_subnet_ids" {
   description = "The subnets where the Gatus containers will actually run"
   type        = list(string)
