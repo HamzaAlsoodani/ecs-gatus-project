@@ -1,0 +1,70 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+    # Only run this workflow when files inside infra/ change.
+    # A README or app/ change will not trigger Terraform.
+    paths:
+      - 'infra/**'
+  # Also allow manual triggering from the GitHub Actions UI
+  workflow_dispatch:
+
+# id-token: write lets GitHub generate the OIDC token to authenticate with AWS.
+# contents: read lets the workflow read your repo code.
+permissions:
+  id-token: write
+  contents: read
+
+# Shared variables used across all steps below
+env:
+  AWS_REGION: eu-west-2
+
+jobs:
+  terraform-apply:
+    # The virtual machine this workflow runs on — Ubuntu hosted by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pull your repo code into the runner so Terraform files are available
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Use OIDC to get temporary AWS credentials using your GitHub Secret.
+      # This replaces the need for storing AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Install Terraform on the runner so terraform commands are available
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Downloads the AWS provider plugin — same as running terraform init locally.
+      # working-directory tells this step to run from inside the infra/ folder.
+      - name: Terraform Init
+        working-directory: infra
+        run: terraform init
+
+      # Shows what Terraform will create/change/destroy before actually doing it.
+      # Useful for reviewing in the pipeline logs.
+      - name: Terraform Plan
+        working-directory: infra
+        run: terraform plan
+
+      # Creates or updates all AWS infrastructure.
+      # -auto-approve skips the manual "yes" prompt since pipelines can't type.
+      - name: Terraform Apply
+        working-directory: infra
+        run: terraform apply -auto-approve
+
+      # Waits 60 seconds for ECS to start the container after infrastructure is ready,
+      # then checks the health endpoint. --fail makes curl return an error code if
+      # the response is not 200, which causes the pipeline to fail and alert you.
+      - name: Post-deploy health check
+        run: |
+          sleep 60
+          curl --fail https://tm.hamza-alsoodani.com/health || exit 1

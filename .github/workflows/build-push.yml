@@ -1,0 +1,52 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  ECR_REPOSITORY: gatus-repo
+  ECR_REGISTRY: 076056288980.dkr.ecr.eu-west-2.amazonaws.com
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pull the repo code into the GitHub Actions runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Use OIDC to get temporary AWS credentials — no stored keys needed
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Log Docker into ECR so we can push images to it
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build the image for linux/amd64 — required for Fargate (Mac is arm64)
+      - name: Build Docker image
+        run: |
+          docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} \
+            ./app
+
+      # Push both tags — latest for ECS to pull, SHA for version traceability
+      - name: Push to ECR
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+

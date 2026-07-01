@@ -20,7 +20,7 @@ endpoints:
   
   - name: ECR Registry
     group: aws
-    url: "https://076056288980.dkr.ecr.us-west-2.amazonaws.com"
+    url: "https://076056288980.dkr.ecr.eu-west-2.amazonaws.com"
     interval: 5m
     conditions:
       - "[STATUS] == 401"

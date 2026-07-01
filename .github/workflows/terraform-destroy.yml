@@ -1,0 +1,51 @@
+name: Terraform Destroy
+
+on:
+  # Only runs when manually triggered from the GitHub Actions UI.
+  # Never runs automatically — destroying infrastructure should always be intentional.
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'yes' to confirm destruction of all resources"
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+
+    # Only proceed if the user typed 'yes' in the confirmation input
+    if: ${{ github.event.inputs.confirm == 'yes' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: infra
+        run: terraform init
+
+      # Shows exactly what will be deleted before destroying it
+      - name: Terraform Plan Destroy
+        working-directory: infra
+        run: terraform plan -destroy
+
+      # Destroys all AWS infrastructure. -auto-approve skips the yes/no prompt.
+      - name: Terraform Destroy
+        working-directory: infra
+        run: terraform destroy -auto-approve

@@ -81,7 +81,7 @@ resource "aws_ecs_task_definition" "app" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/gatus"
-          awslogs-region        = "us-west-2"
+          awslogs-region        = "eu-west-2"
           awslogs-stream-prefix = "ecs"
         }
       }
