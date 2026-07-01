@@ -2,7 +2,7 @@
 
 A health monitoring platform deployed on AWS using Terraform, Docker, and GitHub Actions. This project was built as part of a cloud infrastructure assignment, with the goal of deploying a containerised application to AWS using industry-standard practices.
 
-![Architecture](images/architecture.png)
+![Architecture](images/architecture.gif)
 
 ---
 
