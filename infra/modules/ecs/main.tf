@@ -1,9 +1,3 @@
-# first crate cluster and then create a role that will help cluster
-# communicate to the ecr and pull images from it. then attach the policy to the role 
-# so that it can communicate with ecr
-# then create a security group for ecs so allopws traffic from alb only
-
-
 resource "aws_ecs_cluster" "cluster" {
   name = "gatus-cluster"
 

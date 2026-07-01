@@ -27,7 +27,7 @@ For this project, I configured Gatus to monitor my own deployed domains, SSL cer
 
 ## Architecture
 
-![Architecture Diagram](images/architecture.png)
+![Architecture Diagram](images/architecture.gif)
 
 ```
 User
