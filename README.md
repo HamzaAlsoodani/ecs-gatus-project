@@ -107,12 +107,6 @@ ecs-gatus-project/
 │       ├── alb/                  # Load balancer, listeners, target group
 │       ├── ecs/                  # Cluster, task definition, IAM, Fargate service
 │       └── acm/                  # TLS certificate and DNS validation
-├── images/
-│   ├── architecture.png
-│   ├── demo.gif
-│   ├── pipeline-build.png
-│   ├── pipeline-apply.png
-│   └── pipeline-destroy.png
 └── README.md
 ```
 
