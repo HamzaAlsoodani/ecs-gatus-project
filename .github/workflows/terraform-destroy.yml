@@ -33,6 +33,18 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      # Scale ECS service to 0 before Terraform runs so the task drains cleanly.
+      # Without this, Terraform times out waiting for the task to stop and the
+      # cluster deletion hangs indefinitely.
+      - name: Drain ECS service
+        run: |
+          aws ecs update-service \
+            --cluster gatus-cluster \
+            --service gatus-service \
+            --desired-count 0 \
+            --region ${{ env.AWS_REGION }} || true
+          sleep 30
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
