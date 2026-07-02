@@ -1,11 +1,9 @@
 resource "aws_ecs_cluster" "cluster" {
   name = "gatus-cluster"
-
 }
 
 resource "aws_iam_role" "my_role" {
   name = "ecs-task-execution-role"
-
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -17,7 +15,7 @@ resource "aws_iam_role" "my_role" {
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         }
-      },
+      }
     ]
   })
 

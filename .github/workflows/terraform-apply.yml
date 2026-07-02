@@ -32,9 +32,16 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
       - name: Terraform Init
         working-directory: infra
         run: terraform init
+
+      - name: TFLint
+        working-directory: infra
+        run: tflint --recursive
 
       - name: Terraform Plan
         working-directory: infra

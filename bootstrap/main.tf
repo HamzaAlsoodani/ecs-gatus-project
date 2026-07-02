@@ -1,3 +1,20 @@
+resource "aws_s3_bucket" "tfstate" {
+  bucket        = "hamza-gatus-tfstate"
+  force_destroy = false
+
+  tags = {
+    Name = "gatus-tfstate"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "tfstate" {
+  bucket = aws_s3_bucket.tfstate.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
   client_id_list  = ["sts.amazonaws.com"]
@@ -29,6 +46,8 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
+# AdministratorAccess is used here for simplicity. In production this should
+# be scoped to only the services Terraform needs (ECR, ECS, ALB, VPC, IAM etc).
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   role       = aws_iam_role.github_actions.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
@@ -36,4 +55,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 
 output "role_arn" {
   value = aws_iam_role.github_actions.arn
+}
+
+output "state_bucket" {
+  value = aws_s3_bucket.tfstate.bucket
 }

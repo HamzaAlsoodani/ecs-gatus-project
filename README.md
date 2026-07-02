@@ -4,7 +4,6 @@ A health monitoring platform deployed on AWS using Terraform, Docker, and GitHub
 
 ![Architecture](images/architecture.gif)
 
----
 
 ## Live Demo
 
@@ -15,7 +14,6 @@ A health monitoring platform deployed on AWS using Terraform, Docker, and GitHub
 | Monitoring Dashboard | https://tm.hamza-alsoodani.com |
 | Main Website | https://hamza-alsoodani.com |
 
----
 
 ## What is Gatus?
 
@@ -23,7 +21,6 @@ A health monitoring platform deployed on AWS using Terraform, Docker, and GitHub
 
 For this project, I configured Gatus to monitor my own deployed domains, SSL certificate expiry, DNS resolution, and the ECR registry.
 
----
 
 ## Architecture
 
@@ -50,7 +47,6 @@ Internet (ECR pulls, health checks)
 
 Requests come in through Route53, hit the ALB in the public subnets, and are forwarded to the Gatus container running in the private subnets. The ECS task has no public IP — outbound traffic (such as pulling the image from ECR) goes through a NAT Gateway.
 
----
 
 ## Design Decisions
 
@@ -77,7 +73,6 @@ The infrastructure is split into separate modules — `vpc`, `ecr`, `alb`, `ecs`
 ### Remote state with S3
 Terraform state is stored in an S3 bucket. This means both local runs and CI/CD pipeline runs share the same state file, which is essential for the destroy pipeline to work correctly.
 
----
 
 ## Repository Structure
 
@@ -110,7 +105,6 @@ ecs-gatus-project/
 └── README.md
 ```
 
----
 
 ## CI/CD Pipelines
 
@@ -131,7 +125,6 @@ Manual trigger only. Requires typing `yes` as a confirmation before anything is 
 
 ![Destroy Pipeline](images/pipeline-destroy.png)
 
----
 
 ## Technologies Used
 
@@ -148,7 +141,6 @@ Manual trigger only. Requires typing `yes` as a confirmation before anything is 
 | Docker | Builds the container image |
 | GitHub Actions | Automates builds and deployments |
 
----
 
 ## Challenges
 
