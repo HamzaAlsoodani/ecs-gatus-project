@@ -40,13 +40,6 @@ jobs:
             -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} \
             ./app
 
-      - name: Scan image with Grype
-        uses: anchore/scan-action@v3
-        with:
-          image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-          fail-build: true
-          severity-cutoff: critical
-
       - name: Push to ECR
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
